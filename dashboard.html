@@ -2,37 +2,39 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Phan Thai Office</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-
   <div class="container">
-    <h2>Phan Thai Office</h2>
-    <p id="welcome"></p>
+    <h2>Mon espace</h2>
 
-    <button onclick="goCommandes()">Passer une commande</button>
-    <button onclick="goInscription()">Créer un autre compte</button>
-    <button class="secondary" onclick="goLogout()">Déconnexion</button>
+    <div id="infos"></div>
+
+    <div class="nav">
+      <a href="commandes.html">Passer une commande</a>
+      <a href="index.html">Déconnexion</a>
+    </div>
   </div>
 
-  <script src="app.js"></script>
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get("email") || "";
-    document.getElementById('welcome').textContent =
-      email ? "Connecté en tant que : " + email : "";
+    // Récupération des infos stockées après login
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    function goCommandes() {
-      window.location.href = "commandes.html?email=" + encodeURIComponent(email);
-    }
-    function goInscription() {
-      window.location.href = "inscription.html";
-    }
-    function goLogout() {
+    if (!user) {
       window.location.href = "login.html";
     }
+
+    document.getElementById("infos").innerHTML = `
+      <p><strong>Nom :</strong> ${user.nom}</p>
+      <p><strong>Email :</strong> ${user.email}</p>
+      <p><strong>Téléphone :</strong> ${user.telephone}</p>
+      <p><strong>Solde carte :</strong> ${user.solde_carte} CHF</p>
+      <p><strong>Consignes :</strong> ${user.consignes}</p>
+      <p><strong>Nombre de commandes :</strong> ${user.nb_commandes}</p>
+      <p><strong>Statut :</strong> ${user.statut}</p>
+    `;
   </script>
 </body>
 </html>
