@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbxxzHhezYFUyuDa6mDGk6oGLQiUKjzWgB9NQ4oUZKTYtoA0dEW8jdY7HMjUdsXocho/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwoAs4IHoBaU-e8MZW8iePJ9zxsyGVHTZmu8AAdp3naQE9UCLt56Q5PdjIBGcw6D8aerg/exec";
 
 async function apiCall(payload) {
   const formData = new FormData();
