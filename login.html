@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - Phan Thai Office</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Connexion</h2>
+
+    <label>Email</label>
+    <input type="email" id="email" placeholder="Votre email">
+
+    <button onclick="login()">Se connecter</button>
+
+    <p id="status"></p>
+
+    <p class="link">
+      Pas encore de compte ? <a href="inscription.html">Créer un compte</a>
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    async function login() {
+      const email = document.getElementById('email').value.trim();
+      const status = document.getElementById('status');
+      status.textContent = "Vérification...";
+
+      const res = await apiCall({
+        action: "login",
+        email: email
+      });
+
+      if (res.ok) {
+        window.location.href = "dashboard.html?email=" + encodeURIComponent(email);
+      } else {
+        status.textContent = res.message || "Connexion refusée";
+      }
+    }
+  </script>
+</body>
+</html>
