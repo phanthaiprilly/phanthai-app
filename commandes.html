@@ -2,89 +2,78 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Commande - Phan Thai Office</title>
+  <title>Commander</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
+<body>
   <div class="container">
     <h2>Passer une commande</h2>
 
-    <label>Email utilisé pour commander</label>
-    <input type="email" id="email">
+    <input type="text" id="plat" placeholder="Nom du plat" required>
+    <input type="number" id="quantite" placeholder="Quantité" min="1" required>
 
-    <label>ID du plat</label>
-    <input type="text" id="plat">
-
-    <label>Quantité</label>
-    <input type="number" id="quantite" min="1" value="1">
-
-    <label>Option sans riz</label>
     <select id="sansriz">
-      <option value="Non">Non</option>
-      <option value="Oui">Oui</option>
+      <option value="non">Avec riz</option>
+      <option value="oui">Sans riz</option>
     </select>
 
-    <label>Option Family</label>
     <select id="family">
-      <option value="">Aucune</option>
-      <option value="2">Family 2</option>
-      <option value="3">Family 3</option>
-      <option value="4">Family 4</option>
+      <option value="non">Portion normale</option>
+      <option value="oui">Portion Family</option>
     </select>
 
-    <label>Mode de paiement</label>
     <select id="paiement">
-      <option value="twint">Twint</option>
       <option value="cash">Cash</option>
-      <option value="carte10">Carte 10</option>
-      <option value="carte20">Carte 20</option>
+      <option value="twint">Twint</option>
+      <option value="carte">Carte prépayée</option>
     </select>
 
-    <button onclick="envoyerCommande()">Envoyer la commande</button>
+    <button onclick="envoyer()">Commander</button>
 
-    <p id="status"></p>
+    <div id="msg" class="message"></div>
 
-    <p class="link">
-      Retour au dashboard : <a href="dashboard.html">Dashboard</a>
-    </p>
+    <div class="nav">
+      <a href="dashboard.html">Retour</a>
+    </div>
   </div>
 
-  <script src="app.js"></script>
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const emailParam = params.get("email");
-    if (emailParam) {
-      document.getElementById('email').value = emailParam;
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      window.location.href = "login.html";
     }
 
-    async function envoyerCommande() {
-      const status = document.getElementById('status');
-      status.textContent = "Envoi de la commande...";
+    function afficherMessage(type, texte) {
+      const msg = document.getElementById("msg");
+      msg.className = "message " + type;
+      msg.innerText = texte;
+      msg.style.display = "block";
+    }
 
+    function envoyer() {
       const data = {
         action: "commande",
-        email: document.getElementById('email').value.trim(),
-        plat: document.getElementById('plat').value.trim(),
-        quantite: Number(document.getElementById('quantite').value || 1),
-        sansriz: document.getElementById('sansriz').value,
-        family: document.getElementById('family').value,
-        paiement: document.getElementById('paiement').value
+        email: user.email,
+        plat: document.getElementById("plat").value.trim(),
+        quantite: document.getElementById("quantite").value,
+        sansriz: document.getElementById("sansriz").value,
+        family: document.getElementById("family").value,
+        paiement: document.getElementById("paiement").value
       };
 
-      const res = await apiCall(data);
-
-      if (res.ok) {
-        status.textContent = "Commande enregistrée ✔️";
-        document.getElementById('plat').value = "";
-        document.getElementById('quantite').value = 1;
-        document.getElementById('sansriz').value = "Non";
-        document.getElementById('family').value = "";
-        document.getElementById('paiement').value = "twint";
-      } else {
-        status.textContent = res.message || "Erreur lors de l'enregistrement";
-      }
+      google.script.run
+        .withSuccessHandler(function (res) {
+          if (!res.ok) {
+            afficherMessage("error", res.message);
+          } else {
+            afficherMessage("success", "Commande enregistrée !");
+          }
+        })
+        .withFailureHandler(function (err) {
+          afficherMessage("error", "Erreur serveur : " + err);
+        })
+        .doPost({ data: JSON.stringify(data) });
     }
   </script>
 </body>
