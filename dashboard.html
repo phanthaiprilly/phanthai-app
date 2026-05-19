@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Phan Thai Office</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Phan Thai Office</h2>
+    <p id="welcome"></p>
+
+    <button onclick="goCommandes()">Passer une commande</button>
+    <button onclick="goInscription()">Créer un autre compte</button>
+    <button class="secondary" onclick="goLogout()">Déconnexion</button>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email") || "";
+    document.getElementById('welcome').textContent =
+      email ? "Connecté en tant que : " + email : "";
+
+    function goCommandes() {
+      window.location.href = "commandes.html?email=" + encodeURIComponent(email);
+    }
+    function goInscription() {
+      window.location.href = "inscription.html";
+    }
+    function goLogout() {
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
