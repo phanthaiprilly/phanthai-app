@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commande - Phan Thai Office</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Passer une commande</h2>
+
+    <label>Email utilisé pour commander</label>
+    <input type="email" id="email">
+
+    <label>ID du plat</label>
+    <input type="text" id="plat">
+
+    <label>Quantité</label>
+    <input type="number" id="quantite" min="1" value="1">
+
+    <label>Option sans riz</label>
+    <select id="sansriz">
+      <option value="Non">Non</option>
+      <option value="Oui">Oui</option>
+    </select>
+
+    <label>Option Family</label>
+    <select id="family">
+      <option value="">Aucune</option>
+      <option value="2">Family 2</option>
+      <option value="3">Family 3</option>
+      <option value="4">Family 4</option>
+    </select>
+
+    <label>Mode de paiement</label>
+    <select id="paiement">
+      <option value="twint">Twint</option>
+      <option value="cash">Cash</option>
+      <option value="carte10">Carte 10</option>
+      <option value="carte20">Carte 20</option>
+    </select>
+
+    <button onclick="envoyerCommande()">Envoyer la commande</button>
+
+    <p id="status"></p>
+
+    <p class="link">
+      Retour au dashboard : <a href="dashboard.html">Dashboard</a>
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get("email");
+    if (emailParam) {
+      document.getElementById('email').value = emailParam;
+    }
+
+    async function envoyerCommande() {
+      const status = document.getElementById('status');
+      status.textContent = "Envoi de la commande...";
+
+      const data = {
+        action: "commande",
+        email: document.getElementById('email').value.trim(),
+        plat: document.getElementById('plat').value.trim(),
+        quantite: Number(document.getElementById('quantite').value || 1),
+        sansriz: document.getElementById('sansriz').value,
+        family: document.getElementById('family').value,
+        paiement: document.getElementById('paiement').value
+      };
+
+      const res = await apiCall(data);
+
+      if (res.ok) {
+        status.textContent = "Commande enregistrée ✔️";
+        document.getElementById('plat').value = "";
+        document.getElementById('quantite').value = 1;
+        document.getElementById('sansriz').value = "Non";
+        document.getElementById('family').value = "";
+        document.getElementById('paiement').value = "twint";
+      } else {
+        status.textContent = res.message || "Erreur lors de l'enregistrement";
+      }
+    }
+  </script>
+</body>
+</html>
