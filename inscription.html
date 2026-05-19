@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription - Phan Thai Office</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Inscription</h2>
+
+    <label>Nom complet</label>
+    <input type="text" id="nom" placeholder="Nom et prénom">
+
+    <label>Email principal</label>
+    <input type="email" id="email1" placeholder="Email principal">
+
+    <label>Email secondaire (optionnel)</label>
+    <input type="email" id="email2" placeholder="Email secondaire">
+
+    <label>Téléphone</label>
+    <input type="tel" id="telephone" placeholder="Téléphone">
+
+    <button onclick="inscrire()">Créer mon compte</button>
+
+    <p id="status"></p>
+
+    <p class="link">
+      Déjà un compte ? <a href="login.html">Se connecter</a>
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    async function inscrire() {
+      const status = document.getElementById('status');
+      status.textContent = "Envoi...";
+
+      const data = {
+        action: "inscription",
+        nom: document.getElementById('nom').value.trim(),
+        email1: document.getElementById('email1').value.trim(),
+        email2: document.getElementById('email2').value.trim(),
+        telephone: document.getElementById('telephone').value.trim()
+      };
+
+      const res = await apiCall(data);
+
+      if (res.ok) {
+        status.textContent = "Inscription enregistrée ✔️";
+        document.querySelectorAll("input").forEach(i => i.value = "");
+      } else {
+        status.textContent = res.message || "Erreur lors de l'inscription";
+      }
+    }
+  </script>
+</body>
+</html>
